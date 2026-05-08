@@ -1,1 +1,32 @@
+Решение для семантической сегментации товаров на полках магазинов
+Модели: DeepLabV3+ с encoder timm-efficientnet-b3, FPN с encoder efficientnet-b3
+5-фолдовая кросс-валидация
 
+Аугментации:
+CutMix (probability=0.3)
+RandomResizedCrop, флипы, ротации
+Цветовые трансформации (brightness, contrast, hue)
+
+Оптимизация:
+EMA (Exponential Moving Average) с decay=0.999
+CosineAnnealingLR scheduler с warmup (15 эпох)
+Automatic Mixed Precision (AMP)
+Чекпоинты для возобновления обучения
+
+Результаты по фолдам:
+Fold 0 (DeepLabV3+): Dice 0.9070
+Fold 1 (DeepLabV3+): Dice 0.9445
+Fold 2 (FPN): Dice 0.8818
+Fold 3 (FPN): Dice 0.9412
+Fold 4 (DeepLabV3+): Dice 0.9480
+
+TTA
+8 трансформаций для каждого изображения:
+Оригинал
+Горизонтальный/вертикальный флип
+Повороты на 90°, 180°, 270°
+Увеличение яркости/контраста (+20%)
+Постобработка
+Удаление мелких объектов (min_area=150 пикселей)
+Заполнение отверстий в масках
+Взвешенное ансамблирование (веса = val_dice)
